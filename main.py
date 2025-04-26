@@ -68,24 +68,24 @@ def setup_quick_menu():
 
 
 def main():
-    sck, sb, sth = setup_simple("spell")
-    jck, jb, jth = setup_simple("jump")
-    snck, snb, snth = setup_alternating("sneak")
-    qmck, qmb, qmth = setup_quick_menu()
+    spell_combo_key, spell_button, spell_thread = setup_simple("spell")
+    jump_combo_key, jump_button, jump_thread = setup_simple("jump")
+    sneak_combo_key, sneak_button, sneak_thread = setup_alternating("sneak")
+    quick_menu_combo_key, quick_menu_button, quick_menu_thread = setup_quick_menu()
 
     print("Finished setup")
 
     try:
         while True:
-            handle(sck,keyhandling.press , sb, sth)
-            handle(jck,keyhandling.press, jb, jth, 0.1)
-            handle(snck,keyhandling.alternate_press, snb, snth)
-            handle_multiple(qmck,keyhandling.press, qmb, qmth)
+            handle(spell_combo_key,keyhandling.press , spell_button, spell_thread)
+            handle(jump_combo_key,keyhandling.press, jump_button, jump_thread, 0.1)
+            handle(sneak_combo_key,keyhandling.alternate_press, sneak_button, sneak_thread)
+            handle_multiple(quick_menu_combo_key,keyhandling.press, quick_menu_button, quick_menu_thread)
 
     except KeyboardInterrupt:
         print("Exiting\n")
     finally:
-        for thread_handler in [sth, jth, snth] + qmth:
+        for thread_handler in [spell_thread, jump_thread, sneak_thread] + quick_menu_thread:
             if thread_handler:
                 thread_handler.stop_thread()
 
