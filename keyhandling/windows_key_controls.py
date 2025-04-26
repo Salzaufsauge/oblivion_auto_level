@@ -122,6 +122,28 @@ def is_pressed(vk_code):
 
 
 def press(key, delay=0.01):
+    """
+    Simulates pressing and releasing a key with an optional delay in between.
+
+    :param key: The key to be pressed and released. Accepts any valid key representation
+        depending on the implementation of `press_key` and `release_key`.
+    :param delay: The time, in seconds, to wait between pressing and releasing the key.
+        Defaults to 0.01 seconds.
+    :return: None
+    """
     press_key(key)
     time.sleep(delay)
     release_key(key)
+
+def alternate_press(keys, delay=0.01):
+    """
+    Simulates the pressing of a sequence of keys alternately with a delay between each key press.
+
+    :param keys: A sequence of keys to be pressed alternately.
+    :param delay: The time in seconds to wait between pressing each key. Defaults to 0.01 seconds.
+    :type delay: float
+    :return: None
+    """
+    for key in keys:
+        press(key, delay)
+        time.sleep(delay)
