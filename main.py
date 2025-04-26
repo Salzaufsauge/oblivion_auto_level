@@ -8,7 +8,6 @@ VK_R_CTRL = 0xA3
 def is_combo_pressed(combo_key):
     return (keyhandling.is_pressed(VK_ALT) or keyhandling.is_pressed(VK_R_CTRL)) and keyhandling.is_pressed(combo_key)
 
-
 def handle(combo_key, function, button, thread_handler, delay=0.):
     if combo_key is not None and is_combo_pressed(combo_key):
         thread_handler.toggle_thread(function,button, delay)
@@ -20,32 +19,28 @@ def handle_multiple(combo_key, function, button_dict, thread_handlers):
             thread_handlers[i].toggle_thread(function,key, float(value))
 
 
-def setup_jump():
-    if input("Do you want to setup jump? (y/n)\n") != "y":
+def setup_simple(setup_type:str):
+    if input(f"Do you want to setup {setup_type}? (y/n)\n") != "y":
         return None, None, None
-    combo_key = keyhandling.to_key_code(input("Input your Jump Combo Key\n"))
-    jump_button = keyhandling.to_key_code(input("Input your Jump Button\n"))
-    jump_thread_handler = ThreadHandler()
-    return combo_key, jump_button, jump_thread_handler
+    combo_key = keyhandling.to_key_code(input(f"Input your {setup_type} Combo Key\n"))
+    button = keyhandling.to_key_code(input(f"Input your {setup_type} Button\n"))
+    thread_handler = ThreadHandler()
+    return combo_key, button, thread_handler
 
-
-def setup_spell():
-    if input("Do you want to setup spell? (y/n)\n") != "y":
-        return None, None, None
-    combo_key = keyhandling.to_key_code(input("Input your Spell Combo Key\n"))
-    spell_button = keyhandling.to_key_code(input("Input your Spell Button\n"))
-    spell_thread_handler = ThreadHandler()
-    return combo_key, spell_button, spell_thread_handler
-
-def setup_sneak():
+def setup_alternating(setup_type:str):
     if input("Do you want to setup sneak? (y/n)\n") != "y":
         return None, None, None
-    combo_key = keyhandling.to_key_code(input("Input your Sneak Combo Key\n"))
-    button1 = keyhandling.to_key_code(input("Input your Sneak Button 1\n"))
-    button2 = keyhandling.to_key_code(input("Input your Sneak Button 2\n"))
-    sneak_buttons = [button1, button2]
-    sneak_thread_handler = ThreadHandler()
-    return combo_key, sneak_buttons, sneak_thread_handler
+    combo_key = keyhandling.to_key_code(input(f"Input your {setup_type} Combo Key\n"))
+    i = 1
+    buttons = []
+    while True:
+        key = input(f"Input your {setup_type} Button {i} or escape using q\n")
+        if key == "q":
+            break
+        i += 1
+        buttons.append(keyhandling.to_key_code(key))
+    thread_handler = ThreadHandler()
+    return combo_key, buttons, thread_handler
 
 
 def setup_quick_menu():
@@ -55,7 +50,7 @@ def setup_quick_menu():
     quick_menu_thread_handlers = []
     quick_menu_buttons = {}
     while True:
-        key = input("Input which quick_menu slots you use (1-8) or exit using q\n")
+        key = input("Input which quick_menu slots you use (1-8) or escape using q\n")
         if key == "q":
             print("Finished creating quick menu buttons")
             break
@@ -73,9 +68,9 @@ def setup_quick_menu():
 
 
 def main():
-    sck, sb, sth = setup_spell()
-    jck, jb, jth = setup_jump()
-    snck, snb, snth = setup_sneak()
+    sck, sb, sth = setup_simple("spell")
+    jck, jb, jth = setup_simple("jump")
+    snck, snb, snth = setup_alternating("sneak")
     qmck, qmb, qmth = setup_quick_menu()
 
     print("Finished setup")
